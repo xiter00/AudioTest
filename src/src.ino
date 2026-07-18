@@ -50,9 +50,15 @@ void handlePlay() {
 void setup() {
   Serial.begin(115200);
   
-  // Inisialisasi Audio I2S
+  // SOLUSI OOM: Batasi alokasi memori buffer audio agar muat di RAM internal
+  // Default-nya terlalu serakah (~700KB). Kita set ke ukuran yang aman untuk TTS.
+  // Argumen: (input_buffer_size, output_buffer_size) atau sesuai versi library.
+  // Untuk versi terbaru ESP32-audioI2S, kita bisa set kapasitas internalnya:
+  audio.setBufferSize(32768, 32768); // Menggunakan 32KB untuk input & 32KB untuk output (Total ~64KB)
+  
+  // Inisialisasi Audio I2S seperti biasa
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-  audio.setVolume(15); // Volume (0-21)
+  audio.setVolume(15); 
 
   // Aktifkan Hotspot
   WiFi.softAP(ssid, password);
@@ -62,6 +68,7 @@ void setup() {
   server.on("/play", handlePlay);
   server.begin();
 }
+
 
 void loop() {
   server.handleClient();
