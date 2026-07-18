@@ -31,9 +31,12 @@ jobs:
           --build-property "build.partitions=huge_app" \
           --build-property "upload.maximum_size=3145728" \
           ./src --libraries ./libraries
-
-      - name: Upload Artifact
+          
+       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: esp32-tts-bin
-          path: src/build/esp32:esp32:esp32s3/esp32_tts.ino.bin
+          # Kita pakai wildcard ** agar dia cari file .bin di folder manapun
+          path: |
+            **/*.bin
+            !**/.git/**
