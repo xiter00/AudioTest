@@ -16,19 +16,18 @@ jobs:
         run: |
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
-          
-      - name: Install Library
-        run: |
-          # Update index library terlebih dahulu agar bisa menemukan library
-          arduino-cli lib update-index
-          # Instal library dengan nama yang tepat
-          arduino-cli lib install "ESP32-audioI2S"
 
+      - name: Install Dependencies Manually
+        run: |
+          # Buat folder library jika belum ada
+          mkdir -p libraries
+          # Clone library langsung dari sumbernya
+          git clone https://github.com/schatzmann04/esp32-audioI2S.git libraries/ESP32-audioI2S
 
       - name: Compile Code
         run: |
-          # Sesuaikan fqbn dengan board ESP32-S3 kamu
-          arduino-cli compile --fqbn esp32:esp32:esp32s3 ./src
+          # Compile dengan menyertakan folder library yang baru saja di-clone
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 ./src --libraries ./libraries
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
