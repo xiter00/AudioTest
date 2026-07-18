@@ -24,13 +24,16 @@ jobs:
           # Clone library langsung dari sumbernya
           git clone https://github.com/schreibfaul1/ESP32-audioI2S.git libraries/ESP32-audioI2S
 
-      - name: Compile
+            - name: Compile
         run: |
-          # Kita tentukan folder build-nya sendiri agar mudah dicari
+          # Kita tambahkan --build-property untuk memaksa partisi lebih besar lagi
+          # Dan kita coba buang library yang tidak terpakai dengan --build-property
           arduino-cli compile --fqbn esp32:esp32:esp32s3 \
           --build-property "build.partitions=huge_app" \
+          --build-property "build.flash_size=4MB" \
           --build-path ./build_output \
           ./src --libraries ./libraries
+
 
       - name: Debug - List files
         run: ls -R build_output
