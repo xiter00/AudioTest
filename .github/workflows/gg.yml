@@ -22,7 +22,7 @@ jobs:
           # Buat folder library jika belum ada
           mkdir -p libraries
           # Clone library langsung dari sumbernya
-          git clone https://github.com/schatzmann04/esp32-audioI2S.git libraries/ESP32-audioI2S
+          git clone https://github.com/schreibfaul1/ESP32-audioI2S.git libraries/ESP32-audioI2S
 
       - name: Compile Code
         run: |
