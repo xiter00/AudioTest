@@ -24,10 +24,13 @@ jobs:
           # Clone library langsung dari sumbernya
           git clone https://github.com/schreibfaul1/ESP32-audioI2S.git libraries/ESP32-audioI2S
 
-      - name: Compile Code
+      - name: Compile
         run: |
-          # Compile dengan menyertakan folder library yang baru saja di-clone
-          arduino-cli compile --fqbn esp32:esp32:esp32s3 ./src --libraries ./libraries
+          # Menambahkan --build-property partition_scheme=huge_app
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 \
+          --build-property "build.partitions=huge_app" \
+          --build-property "upload.maximum_size=3145728" \
+          ./src --libraries ./libraries
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
