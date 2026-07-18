@@ -1,0 +1,31 @@
+name: Compile ESP32 TTS
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2.0.0
+
+      - name: Install ESP32 Board Package
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32
+          # Instal library yang kamu butuhkan
+          arduino-cli lib install "ESP32-audioI2S"
+
+      - name: Compile Code
+        run: |
+          # Sesuaikan fqbn dengan board ESP32-S3 kamu
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 ./src
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-tts-bin
+          path: src/build/esp32:esp32:esp32s3/esp32_tts.ino.bin
