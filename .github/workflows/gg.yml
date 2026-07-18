@@ -41,5 +41,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: esp32-tts-bin
-          path: build_output/*.bin
+          path: |
+            build-path/*.bin
+            build-path/*/*.bin
+          
 
