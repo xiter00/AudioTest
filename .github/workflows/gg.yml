@@ -16,8 +16,14 @@ jobs:
         run: |
           arduino-cli core update-index
           arduino-cli core install esp32:esp32
-          # Instal library yang kamu butuhkan
+          
+      - name: Install Library
+        run: |
+          # Update index library terlebih dahulu agar bisa menemukan library
+          arduino-cli lib update-index
+          # Instal library dengan nama yang tepat
           arduino-cli lib install "ESP32-audioI2S"
+
 
       - name: Compile Code
         run: |
