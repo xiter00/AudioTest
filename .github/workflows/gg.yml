@@ -24,7 +24,7 @@ jobs:
           # Clone library langsung dari sumbernya
           git clone https://github.com/schreibfaul1/ESP32-audioI2S.git libraries/ESP32-audioI2S
 
-            - name: Compile
+      - name: Compile
         run: |
           # Kita tambahkan --build-property untuk memaksa partisi lebih besar lagi
           # Dan kita coba buang library yang tidak terpakai dengan --build-property
