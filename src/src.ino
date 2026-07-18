@@ -10,7 +10,6 @@ WebServer server(80);
 Audio audio;
 
 // Konfigurasi Pin I2S untuk MAX98357A
-// Sesuaikan pin ini dengan kabel yang kamu pasang di ESP32-S3
 #define I2S_DOUT 21
 #define I2S_BCLK 22
 #define I2S_LRC  23
@@ -50,15 +49,13 @@ void handlePlay() {
 void setup() {
   Serial.begin(115200);
   
-  // SOLUSI OOM: Batasi alokasi memori buffer audio agar muat di RAM internal
-  // Default-nya terlalu serakah (~700KB). Kita set ke ukuran yang aman untuk TTS.
-  // Argumen: (input_buffer_size, output_buffer_size) atau sesuai versi library.
-  // Untuk versi terbaru ESP32-audioI2S, kita bisa set kapasitas internalnya:
-  audio.setBufferSize(32768, 32768); // Menggunakan 32KB untuk input & 32KB untuk output (Total ~64KB)
-  
   // Inisialisasi Audio I2S seperti biasa
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(15); 
+  
+  // SOLUSI OOM UNTUK LIBRARY VERSI 3+
+  // Ganti setBufferSize menjadi setFileBufferSize
+  audio.setFileBufferSize(32768); 
 
   // Aktifkan Hotspot
   WiFi.softAP(ssid, password);
@@ -68,7 +65,6 @@ void setup() {
   server.on("/play", handlePlay);
   server.begin();
 }
-
 
 void loop() {
   server.handleClient();
