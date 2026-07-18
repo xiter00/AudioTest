@@ -26,17 +26,18 @@ jobs:
 
       - name: Compile
         run: |
-          # Menambahkan --build-property partition_scheme=huge_app
+          # Kita tentukan folder build-nya sendiri agar mudah dicari
           arduino-cli compile --fqbn esp32:esp32:esp32s3 \
           --build-property "build.partitions=huge_app" \
-          --build-property "upload.maximum_size=3145728" \
+          --build-path ./build_output \
           ./src --libraries ./libraries
-          
+
+      - name: Debug - List files
+        run: ls -R build_output
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: esp32-tts-bin
-          # Kita pakai wildcard ** agar dia cari file .bin di folder manapun
-          path: |
-            **/*.bin
-            !**/.git/**
+          path: build_output/*.bin
+
