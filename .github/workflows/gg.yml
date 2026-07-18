@@ -42,7 +42,7 @@ jobs:
         with:
           name: esp32-tts-bin
           path: |
-            build-output/*.bin
-            build-output/*/*.bin
+            build_output/*.bin
+            build_output/*/*.bin
           
 
