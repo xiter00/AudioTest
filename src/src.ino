@@ -2,7 +2,7 @@
 #include <WebServer.h>
 #include <Audio.h>
 
-// Konfigurasi WiFi
+// WAJIB GANTI: Masukkan nama Hotspot Hape lu atau WiFi rumah yang ADA INTERNETNYA!
 const char* ssid = "NOT MASTAH";
 const char* password = "123456789001"; 
 
@@ -40,9 +40,7 @@ void handlePlay() {
     String text = server.arg("text");
     server.send(200, "text/plain", "Sedang memutar: " + text);
     
-    // GAK PERLU URL MANUAL LAGI!
-    // Pake fungsi sakti bawaan library khusus buat Google TTS
-    // Otomatis ngatur HTTPS, buffer memori yang aman, dan bahasa (id = Indonesia)
+    // Tembak Google TTS (sekarang bakal berhasil karena ESP32 udah ada internet)
     audio.connecttospeech(text.c_str(), "id");
   }
 }
@@ -50,13 +48,23 @@ void handlePlay() {
 void setup() {
   Serial.begin(115200);
   
-  // Inisialisasi Audio I2S (Gak usah pusingin set buffer lagi)
+  // Inisialisasi Audio I2S
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(15); 
   
-  // Aktifkan Hotspot
-  WiFi.softAP(ssid, password);
-  Serial.println("Hotspot aktif di: " + WiFi.softAPIP().toString());
+  // SOLUSI JARINGAN: Ubah jadi Mode Station (Konek ke WiFi)
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  
+  Serial.print("Konek ke WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("\nBerhasil Konek!");
+  Serial.print("Buka browser di HP lu, ketik IP ini: ");
+  Serial.println(WiFi.localIP());
 
   server.on("/", handleRoot);
   server.on("/play", handlePlay);
