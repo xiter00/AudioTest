@@ -4,7 +4,7 @@
 
 // Konfigurasi WiFi
 const char* ssid = "NOT MASTAH";
-const char* password = "123456789001"; // Dikosongkan agar tanpa password
+const char* password = "123456789001"; 
 
 WebServer server(80);
 Audio audio;
@@ -38,25 +38,22 @@ void handleRoot() {
 void handlePlay() {
   if (server.hasArg("text")) {
     String text = server.arg("text");
-    // URL Google TTS untuk Bahasa Indonesia (tl=id)
-    String url = "http://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=" + text;
-    
     server.send(200, "text/plain", "Sedang memutar: " + text);
-    audio.connecttohost(url.c_str());
+    
+    // GAK PERLU URL MANUAL LAGI!
+    // Pake fungsi sakti bawaan library khusus buat Google TTS
+    // Otomatis ngatur HTTPS, buffer memori yang aman, dan bahasa (id = Indonesia)
+    audio.connecttospeech(text.c_str(), "id");
   }
 }
 
 void setup() {
   Serial.begin(115200);
   
-  // Inisialisasi Audio I2S seperti biasa
+  // Inisialisasi Audio I2S (Gak usah pusingin set buffer lagi)
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(15); 
   
-  // SOLUSI OOM UNTUK LIBRARY VERSI 3+
-  // Ganti setBufferSize menjadi setFileBufferSize
-  audio.setFileBufferSize(32768); 
-
   // Aktifkan Hotspot
   WiFi.softAP(ssid, password);
   Serial.println("Hotspot aktif di: " + WiFi.softAPIP().toString());
